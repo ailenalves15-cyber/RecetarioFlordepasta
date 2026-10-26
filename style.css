@@ -807,3 +807,468 @@ footer {
     padding: 22px;
   }
 }
+
+/* ==========================================
+   DISEÑO RESPONSIVE - FLOR DE PASTA
+   Computadora, tablet y celular
+   ========================================== */
+
+/* Ajustes generales */
+html {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+body {
+  width: 100%;
+  min-width: 0;
+  overflow-x: hidden;
+}
+
+img {
+  max-width: 100%;
+}
+
+button,
+input,
+select,
+textarea {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+main,
+.recipe-section,
+.recipe-grid,
+.recipe-card {
+  min-width: 0;
+}
+
+/* COMPUTADORAS: pantallas grandes */
+@media (min-width: 1100px) {
+  .topbar {
+    padding-left: max(6.5%, calc((100% - 1400px) / 2));
+    padding-right: max(6.5%, calc((100% - 1400px) / 2));
+  }
+
+  .recipe-section {
+    padding-left: 50px;
+    padding-right: 50px;
+  }
+
+  .recipe-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+  }
+
+  .recipe-cover {
+    height: 200px;
+  }
+
+  .recipe-body {
+    padding: 24px;
+  }
+
+  .recipe-dialog,
+  .admin-dialog {
+    max-width: 720px;
+    max-height: 90vh;
+  }
+}
+
+/* TABLETS */
+@media (min-width: 601px) and (max-width: 900px) {
+  .topbar {
+    padding: 16px 4%;
+    gap: 14px;
+  }
+
+  .brand {
+    min-width: 0;
+    gap: 9px;
+  }
+
+  .brand-logo {
+    width: 43px;
+    height: 43px;
+  }
+
+  .brand strong {
+    font-size: 22px;
+  }
+
+  .brand small {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+
+  .recipe-section {
+    padding: 50px 4% 60px;
+  }
+
+  .recipe-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+  }
+
+  .recipe-cover {
+    height: 170px;
+  }
+
+  .recipe-body {
+    padding: 17px;
+  }
+
+  .recipe-body h3 {
+    font-size: 19px;
+  }
+
+  .recipe-meta {
+    flex-wrap: wrap;
+  }
+}
+
+/* CELULARES */
+@media (max-width: 600px) {
+  body {
+    font-size: 14px;
+  }
+
+  /* Encabezado */
+  .topbar {
+    min-height: 0;
+    padding: 12px 4%;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .brand {
+    flex: 1 1 auto;
+    min-width: 0;
+    gap: 8px;
+  }
+
+  .brand-logo {
+    width: 39px;
+    height: 39px;
+  }
+
+  .brand strong {
+    font-size: clamp(16px, 4.8vw, 21px);
+    overflow-wrap: anywhere;
+  }
+
+  .brand small {
+    font-size: 7px;
+    letter-spacing: 0.7px;
+    line-height: 1.4;
+  }
+
+  .admin-button {
+    flex-shrink: 0;
+    padding: 9px 10px;
+    gap: 5px;
+    font-size: 11px;
+    white-space: nowrap;
+  }
+
+  /* Sección principal */
+  .recipe-section {
+    width: 100%;
+    padding: 34px 4% 45px;
+  }
+
+  .section-heading {
+    align-items: flex-start;
+    gap: 10px;
+    margin-bottom: 22px;
+  }
+
+  .section-heading > div {
+    min-width: 0;
+  }
+
+  .section-heading h2 {
+    font-size: clamp(23px, 6vw, 29px);
+    overflow-wrap: anywhere;
+  }
+
+  .section-heading p {
+    font-size: 13px;
+  }
+
+  .recipe-count {
+    flex-shrink: 0;
+    max-width: 95px;
+    padding-top: 5px;
+    font-size: 10px;
+    text-align: right;
+  }
+
+  /* Buscador */
+  .search-box {
+    width: 100%;
+    max-width: none;
+    min-height: 48px;
+    gap: 9px;
+    margin-bottom: 19px;
+    padding: 0 12px;
+  }
+
+  .search-box input {
+    width: 100%;
+    min-width: 0;
+    font-size: 13px;
+  }
+
+  .search-box input::placeholder {
+    font-size: 12px;
+  }
+
+  /* Categorías: pueden ocupar varias líneas */
+  .categories {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 23px;
+  }
+
+  .category {
+    max-width: 100%;
+    padding: 9px 12px;
+    font-size: 12px;
+    white-space: normal;
+  }
+
+  /* Tarjetas: una por fila en celular */
+  .recipe-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 15px;
+  }
+
+  .recipe-card {
+    width: 100%;
+    border-radius: 10px;
+  }
+
+  .recipe-cover {
+    height: clamp(145px, 48vw, 205px);
+  }
+
+  .recipe-body {
+    padding: 16px;
+  }
+
+  .recipe-body h3 {
+    font-size: 19px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+  }
+
+  .recipe-body p {
+    min-height: 0;
+    font-size: 13px;
+  }
+
+  .recipe-meta {
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-size: 11px;
+  }
+
+  .view-recipe {
+    padding: 7px 0;
+    font-size: 12px;
+  }
+
+  /* Ventana de detalle de receta */
+  .recipe-dialog,
+  .admin-dialog {
+    width: calc(100% - 20px);
+    max-width: none;
+    max-height: 90dvh;
+    margin: auto;
+    border-radius: 12px;
+    box-sizing: border-box;
+  }
+
+  .recipe-dialog {
+    padding: 0;
+  }
+
+  .dialog-content {
+    padding: 19px 16px;
+  }
+
+  .admin-dialog {
+    padding: 20px 16px;
+  }
+
+  .dialog-top {
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .dialog-top > div {
+    min-width: 0;
+  }
+
+  .dialog-top h2 {
+    font-size: 24px;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+  }
+
+  .close-button {
+    flex-shrink: 0;
+    width: 35px;
+    height: 35px;
+  }
+
+  .detail-description {
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+
+  /* Rendimiento y estadísticas */
+  .detail-stats {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+  }
+
+  .stat {
+    padding: 13px;
+  }
+
+  .stat strong {
+    font-size: 16px;
+    overflow-wrap: anywhere;
+  }
+
+  .scale-panel {
+    padding: 15px;
+  }
+
+  .scale-panel h3,
+  .dialog-content h3 {
+    font-size: 19px;
+  }
+
+  /* Ingredientes y cantidades */
+  .ingredient-list li {
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 13px;
+    overflow-wrap: anywhere;
+  }
+
+  .ingredient-list li span:first-child {
+    min-width: 0;
+    overflow-wrap: anywhere;
+  }
+
+  .ingredient-list li span:last-child {
+    flex-shrink: 0;
+    max-width: 48%;
+    text-align: right;
+    overflow-wrap: anywhere;
+  }
+
+  /* Formularios de administración */
+  .admin-dialog input,
+  .admin-dialog select,
+  .admin-dialog textarea {
+    width: 100%;
+    min-width: 0;
+    font-size: 16px;
+  }
+
+  .admin-dialog form > div[style*="grid-template-columns"] {
+    grid-template-columns: minmax(0, 1fr) !important;
+  }
+
+  .admin-dialog form > div[style*="display:flex"],
+  .admin-dialog #adminRecipeList li {
+    flex-wrap: wrap;
+  }
+
+  .admin-dialog .primary-button,
+  .admin-dialog .secondary-button {
+    min-height: 44px;
+  }
+
+  /* Estados vacíos y pie de página */
+  .empty-state {
+    padding: 35px 10px;
+  }
+
+  .empty-state h3 {
+    font-size: 21px;
+  }
+
+  footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+    padding: 22px 5%;
+  }
+
+  .footer-brand {
+    font-size: 21px;
+  }
+}
+
+/* CELULARES MUY ESTRECHOS */
+@media (max-width: 360px) {
+  .topbar {
+    align-items: flex-start;
+  }
+
+  .brand-logo {
+    width: 32px;
+    height: 32px;
+  }
+
+  .brand strong {
+    font-size: 16px;
+  }
+
+  .brand small {
+    font-size: 6px;
+    letter-spacing: 0.4px;
+  }
+
+  .admin-button {
+    padding: 8px;
+    font-size: 10px;
+  }
+
+  .section-heading {
+    flex-direction: column;
+  }
+
+  .recipe-count {
+    max-width: none;
+    text-align: left;
+  }
+
+  .dialog-content,
+  .admin-dialog {
+    padding: 15px 12px;
+  }
+}
+
+/* Evita animaciones innecesarias si el dispositivo las desactiva */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
