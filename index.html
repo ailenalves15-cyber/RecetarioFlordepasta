@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#F36B21">
+  <title>Flor de Pasta | Recetario</title>
+  <link rel="stylesheet" href="style.css">
+  <script type="module" src="script.js"></script>
+</head>
+<body>
+  <header class="topbar">
+<a class="brand" href="#" aria-label="Flor de Pasta, inicio">
+  <img
+    src="Logo.png"
+    alt="Logo de Flor de Pasta"
+    class="brand-logo"
+  >
+  <span>
+    <strong>Flor de Pasta</strong>
+    <small>RECETARIO DE ELABORACIÓN</small>
+  </span>
+</a>
+
+    <button class="admin-button" id="adminButton" type="button">
+      <span>♙</span> Administración
+    </button>
+  </header>
+
+  <main>
+    <section class="recipe-section" id="recetas">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">EL RECETARIO</span>
+          <h2>¿Qué vamos a preparar?</h2>
+          <p>Elegí una categoría o buscá una receta.</p>
+        </div>
+
+        <span class="recipe-count" id="recipeCount">0 recetas</span>
+      </div>
+
+      <label class="search-box">
+        <span>⌕</span>
+        <input
+          id="searchInput"
+          type="search"
+          placeholder="Buscar por nombre o ingrediente..."
+          autocomplete="off"
+        >
+        <kbd>Buscar</kbd>
+      </label>
+
+      <nav class="categories" id="categories" aria-label="Categorías de recetas">
+        <button class="category active" data-category="Todas" type="button">Todas</button>
+        <button class="category" data-category="Masas" type="button">Masas</button>
+        <button class="category" data-category="Rellenos" type="button">Rellenos</button>
+        <button class="category" data-category="Salsas" type="button">Salsas</button>
+        <button class="category" data-category="Productos terminados" type="button">Productos terminados</button>
+      </nav>
+
+      <div class="recipe-grid" id="recipeGrid"></div>
+
+      <div class="empty-state hidden" id="emptyState">
+        <span>⌕</span>
+        <h3>No encontramos recetas</h3>
+        <p>Probá con otra búsqueda o elegí una categoría diferente.</p>
+
+        <button class="secondary-button" id="clearFilters" type="button">
+          Ver todas las recetas
+        </button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <a class="footer-brand" href="#">Flor de pasta</a>
+    <span>Recetario interno de elaboración</span>
+    <span>© <span id="year"></span> Flor de Pasta</span>
+  </footer>
+
+  <dialog id="recipeDialog" class="recipe-dialog">
+    <div id="recipeDetail"></div>
+  </dialog>
+
+  <dialog id="adminDialog" class="admin-dialog">
+    <div class="dialog-top">
+      <div>
+        <span class="eyebrow">ACCESO RESTRINGIDO</span>
+        <h2>Administración</h2>
+      </div>
+
+      <button
+        class="close-button"
+        id="closeAdmin"
+        type="button"
+        aria-label="Cerrar"
+      >×</button>
+    </div>
+
+    <p>El acceso de administrador se habilitará al configurar el inicio de sesión y los permisos de Firebase.</p>
+
+    <p class="admin-notice">
+      Esta versión es una demostración. Las recetas de ejemplo todavía no son recetas oficiales.
+    </p>
+
+    <button class="primary-button" id="closeAdminAction" type="button">
+      Entendido
+    </button>
+  </dialog>
+</body>
+</html>
