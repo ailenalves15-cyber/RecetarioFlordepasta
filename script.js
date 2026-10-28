@@ -121,6 +121,17 @@ function mostrarEstadoCarga(mensaje) {
   `;
 }
 
+function normalizarUnidadRendimiento(valor) {
+  const unidad = String(valor || "").trim().toLowerCase();
+
+  if (["unidad", "unidades", "u"].includes(unidad)) return "Unidades";
+  if (["docena", "docenas", "doc"].includes(unidad)) return "Docenas";
+  if (["plancha", "planchas"].includes(unidad)) return "Planchas";
+  if (["kg", "kilo", "kilos", "kilogramo", "kilogramos"].includes(unidad)) return "Kg";
+
+  return "Unidades";
+}
+
 function normalizarReceta(datos, id) {
   return {
     id,
@@ -128,7 +139,8 @@ function normalizarReceta(datos, id) {
     categoria: String(datos.categoria || "Masas"),
     descripcion: String(datos.descripcion || ""),
     rendimiento: Number(datos.rendimiento) || 1,
-    unidadRendimiento: String(datos.unidadRendimiento || "unidades"),
+    unidadRendimiento: normalizarUnidadRendimiento(datos.unidadRendimiento),
+    pesoNeto: Number(datos.pesoNeto) || 0,
     tiempo: Number(datos.tiempo) || 0,
     simbolo: String(datos.simbolo || datos.nombre?.slice(0, 2) || "FP"),
     imagenUrl: String(datos.imagenUrl || ""),
@@ -397,6 +409,15 @@ function renderizarDetalle(receta) {
         </div>
 
         <div class="stat">
+  <small>Peso neto</small>
+  <strong>
+    ${receta.pesoNeto > 0
+      ? `${formatoNumero(receta.pesoNeto)} kg`
+      : "Sin especificar"}
+  </strong>
+</div>
+
+        <div class="stat">
           <small>Tiempo estimado</small>
           <strong>${formatoNumero(receta.tiempo)} minutos</strong>
         </div>
@@ -406,16 +427,17 @@ function renderizarDetalle(receta) {
         <h3>Calculadora de producción</h3>
 
         <p class="detail-description">
-          Cambiá el rendimiento deseado para recalcular las cantidades.
-          Esto no modifica la receta guardada.
+          Ingresá la cantidad de producto que querés preparar y calcularemos las cantidades necesarias de cada ingrediente.
+          (Esto no modifica la receta guardada).
         </p>
 
         <label for="desiredYield">
-          Cantidad deseada (${escaparHTML(receta.unidadRendimiento)})
+          Cantidad a preparar (${escaparHTML(receta.unidadRendimiento)})
         </label>
 
         <input
           id="desiredYield"
+          placeholder="Ej: 400"
           type="number"
           min="0.001"
           step="any"
@@ -886,20 +908,20 @@ function abrirFormularioReceta(receta) {
     </div>
 
     <p>
-      Completá los datos de la receta. Cargá las cantidades y los pasos
-      aprobados por Flor de Pasta.
+      Cargá los ingredientes indicando el nombre, la cantidad y la unidad de medida de cada uno. Después, detallá el procedimiento paso a paso y, por último, guardá la receta.
     </p>
 
     <form id="recipeForm" class="admin-form">
 
       <label for="recipeName">Nombre de la receta *</label>
-      <input
-        id="recipeName"
-        required
-        maxlength="120"
-        value="${escaparHTML(receta?.nombre || "")}"
-        style="width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px"
-      >
+    <input
+  id="recipeName"
+  required
+  maxlength="120"
+  placeholder="Ej: Ricota, espinaca y nuez"
+  value="${escaparHTML(receta?.nombre || "")}"
+  style="width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px"
+>
 
       <label for="recipeCategory">Categoría *</label>
       <select
@@ -923,11 +945,13 @@ function abrirFormularioReceta(receta) {
 
       <label for="recipeDescription">Descripción</label>
       <input
-        id="recipeDescription"
-        maxlength="250"
-        value="${escaparHTML(receta?.descripcion || "")}"
-        style="width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px"
-      >
+  id="recipeDescription"
+  maxlength="250"
+  placeholder="Ej: Relleno para raviolones"
+  value="${escaparHTML(receta?.descripcion || "")}"
+  style="width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px"
+>
+>
 
       <label for="recipeImage">Foto de la receta (opcional)</label>
 
@@ -961,66 +985,90 @@ function abrirFormularioReceta(receta) {
           : ""
       }
 
-      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px">
+      <div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:12px 16px">
 
-        <div>
-          <label for="recipeYield">Rendimiento original *</label>
-          <input
-            id="recipeYield"
-            type="number"
-            min="0.001"
-            step="any"
-            required
-            value="${escaparHTML(receta?.rendimiento ?? "")}"
-            style="width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px"
-          >
-        </div>
+  <div style="min-width:0">
+    <label for="recipeYield">Rendimiento de la receta base *</label>
+    <input
+      id="recipeYield"
+      placeholder="Ej: 120 raviolones"
+      type="number"
+      min="0.001"
+      step="any"
+      required
+      value="${escaparHTML(receta?.rendimiento ?? "")}"
+      style="box-sizing:border-box;width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px"
+    >
+  </div>
 
-        <div>
-          <label for="recipeYieldUnit">Unidad del rendimiento *</label>
-          <input
-            id="recipeYieldUnit"
-            required
-            maxlength="80"
-            placeholder="Ej. kg, planchas, unidades"
-            value="${escaparHTML(receta?.unidadRendimiento || "")}"
-            style="width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px"
-          >
-        </div>
+  <div style="min-width:0">
+    <label for="recipeYieldUnit">Unidad del rendimiento *</label>
+    <select
+      id="recipeYieldUnit"
+      required
+      style="box-sizing:border-box;width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px;background:white"
+    >
+      <option value="Unidades" ${normalizarUnidadRendimiento(receta?.unidadRendimiento) === "Unidades" ? "selected" : ""}>Unidades</option>
+      <option value="Docenas" ${normalizarUnidadRendimiento(receta?.unidadRendimiento) === "Docenas" ? "selected" : ""}>Docenas</option>
+      <option value="Planchas" ${normalizarUnidadRendimiento(receta?.unidadRendimiento) === "Planchas" ? "selected" : ""}>Planchas</option>
+      <option value="Kg" ${normalizarUnidadRendimiento(receta?.unidadRendimiento) === "Kg" ? "selected" : ""}>Kg</option>
+    </select>
+  </div>
 
-        <div>
-          <label for="recipeTime">Tiempo estimado (minutos)</label>
-          <input
-            id="recipeTime"
-            type="number"
-            min="0"
-            step="1"
-            value="${escaparHTML(receta?.tiempo ?? 0)}"
-            style="width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px"
-          >
-        </div>
+    <div style="min-width:0;grid-column:1 / -1">
+    <label for="recipeNetWeight">Peso neto de la receta (kg) *</label>
+    <input
+      id="recipeNetWeight"
+      type="number"
+      min="0.001"
+      step="0.001"
+      required
+      placeholder="Ej.: 2,500 kg"
+      value="${escaparHTML(receta?.pesoNeto ?? "")}"
+      style="box-sizing:border-box;width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px"
+    >
+    <small class="detail-description">
+      Ingresá el peso neto total de la preparación en kilogramos.
+    </small>
+  </div>
 
-        <div>
-          <label for="recipeSymbol">Iniciales para la tarjeta</label>
-          <input
-            id="recipeSymbol"
-            maxlength="8"
-            value="${escaparHTML(receta?.simbolo || "")}"
-            style="width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px"
-          >
-        </div>
+  <div style="min-width:0;grid-column:1">
+    <label for="recipeTime">Tiempo estimado (minutos)</label>
+    <input
+      id="recipeTime"
+      placeholder="Ej: 15 minutos"
+      type="number"
+      min="0"
+      step="1"
+      value="${escaparHTML(receta?.tiempo ?? 0)}"
+      style="box-sizing:border-box;width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px"
+    >
+  </div>
+
+  <div style="min-width:0;grid-column:1">
+    <label for="recipeSymbol">Iniciales para la tarjeta</label>
+    <input
+      id="recipeSymbol"
+      placeholder="Ej: REN"
+      maxlength="8"
+      value="${escaparHTML(receta?.simbolo || "")}"
+      style="box-sizing:border-box;width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px"
+    >
+  </div>
+
+</div>
 
       </div>
 
       <label for="recipeIngredients">
-        Ingredientes * (uno por línea: nombre | cantidad | unidad)
-      </label>
+  Ingredientes * (uno por línea: nombre, cantidad, unidad)
+</label>
 
       <textarea
         id="recipeIngredients"
         required
         rows="6"
-        placeholder="Harina | 500 | g&#10;Huevo | 200 | g"
+        placeholder="Harina, 500, g&#10;Huevo, 200, g"
         style="width:100%;padding:11px;border:1px solid var(--line);border-radius:7px;margin:7px 0 14px;resize:vertical"
       >${escaparHTML(ingredientes)}</textarea>
 
@@ -1106,7 +1154,7 @@ function abrirFormularioReceta(receta) {
         .map(linea => linea.trim())
         .filter(Boolean)
         .map((linea, indice) => {
-          const partes = linea.split("|").map(parte => parte.trim());
+          const partes = linea.split(/[,|]/).map(parte => parte.trim());
 
           if (partes.length !== 3 || !partes[0] || !partes[2]) {
             throw new Error(
@@ -1145,6 +1193,14 @@ function abrirFormularioReceta(receta) {
       const rendimiento = Number(
         document.getElementById("recipeYield").value
       );
+
+      const pesoNeto = Number(
+  document.getElementById("recipeNetWeight").value
+);
+
+if (!Number.isFinite(pesoNeto) || pesoNeto <= 0) {
+  throw new Error("El peso neto debe ser mayor que cero.");
+}
 
       if (!Number.isFinite(rendimiento) || rendimiento <= 0) {
         throw new Error("El rendimiento debe ser mayor que cero.");
@@ -1188,11 +1244,12 @@ function abrirFormularioReceta(receta) {
       }
 
       const datos = {
-        nombre: document.getElementById("recipeName").value.trim(),
-        categoria: document.getElementById("recipeCategory").value,
-        descripcion: document.getElementById("recipeDescription").value.trim(),
-        rendimiento,
-        unidadRendimiento: document.getElementById("recipeYieldUnit").value.trim(),
+  nombre: document.getElementById("recipeName").value.trim(),
+  categoria: document.getElementById("recipeCategory").value,
+  descripcion: document.getElementById("recipeDescription").value.trim(),
+  rendimiento,
+  pesoNeto,
+  unidadRendimiento: document.getElementById("recipeYieldUnit").value.trim(),
         tiempo: Math.max(
           0,
           Number(document.getElementById("recipeTime").value) || 0
@@ -1449,4 +1506,61 @@ onAuthStateChanged(auth, async usuario => {
       });
     }
   }
+});
+
+/* =========================================
+   MEDIDAS DISUASORIAS CONTRA LA COPIA
+========================================= */
+
+function estaDentroDeUnaReceta(elemento) {
+  return Boolean(
+    elemento.closest(
+      ".recipe-card, .recipe-dialog, #recipeDetail, #recipeGrid"
+    )
+  );
+}
+
+// Desactivar el clic derecho sobre las recetas.
+document.addEventListener("contextmenu", function (event) {
+  if (estaDentroDeUnaReceta(event.target)) {
+    event.preventDefault();
+  }
+});
+
+// Bloquear algunos atajos de teclado sobre las recetas.
+// No bloquea las herramientas externas ni las capturas del sistema.
+document.addEventListener("keydown", function (event) {
+  if (!estaDentroDeUnaReceta(event.target)) return;
+
+  const elemento = event.target;
+  const esCampoEditable =
+    elemento.matches("input, textarea, select") ||
+    elemento.isContentEditable;
+
+  if (esCampoEditable) return;
+
+  const tecla = event.key.toLowerCase();
+  const modificador = event.ctrlKey || event.metaKey;
+
+  if (
+    modificador &&
+    ["c", "s", "p", "u"].includes(tecla)
+  ) {
+    event.preventDefault();
+  }
+});
+
+// Evitar arrastrar las imágenes de las recetas.
+document.addEventListener("dragstart", function (event) {
+  if (
+    event.target instanceof HTMLImageElement &&
+    estaDentroDeUnaReceta(event.target)
+  ) {
+    event.preventDefault();
+  }
+});
+
+// Mostrar un aviso si se intenta imprimir la página.
+window.addEventListener("beforeprint", function () {
+  alert("La impresión del recetario está deshabilitada.");
 });

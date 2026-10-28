@@ -1272,3 +1272,53 @@ main,
     animation-duration: 0.01ms !important;
   }
 }
+
+/* =========================================
+   PROTECCIÓN DISUASORIA DEL RECETARIO
+========================================= */
+
+.recipe-card,
+.recipe-card *,
+.recipe-dialog,
+.recipe-dialog *,
+#recipeDetail,
+#recipeDetail *,
+#recipeGrid {
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* Permitir escribir y seleccionar dentro de los campos. */
+input,
+textarea,
+select,
+[contenteditable="true"],
+.recipe-dialog input,
+.recipe-dialog textarea,
+.recipe-dialog select {
+  -webkit-user-select: text;
+  user-select: text;
+}
+
+/* Evitar arrastrar imágenes de recetas. */
+.recipe-card img,
+.recipe-dialog img,
+#recipeDetail img {
+  -webkit-user-drag: none;
+}
+
+/* Ocultar el contenido del recetario al imprimir. */
+@media print {
+  body * {
+    visibility: hidden !important;
+  }
+
+  body::after {
+    content: "La impresión del recetario está deshabilitada.";
+    visibility: visible !important;
+    display: block;
+    padding: 30px;
+    font-size: 18px;
+    color: #000;
+  }
+}
