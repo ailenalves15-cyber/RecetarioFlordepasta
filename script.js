@@ -505,7 +505,7 @@ function renderizarDetalle(receta) {
       <li>
         <span>${escaparHTML(ingrediente.nombre)}</span>
         <span>
-          ${formatoNumero(Number(ingrediente.cantidad) * factor)}
+          ${formatoNumero(Math.round(Number(ingrediente.cantidad) * factor))}
           ${escaparHTML(ingrediente.unidad)}
         </span>
       </li>
@@ -513,10 +513,14 @@ function renderizarDetalle(receta) {
   });
 
   if (esAdministrador) {
-    document.getElementById("editThisRecipe").addEventListener("click", () => {
-      recipeDialog.close();
-      abrirFormularioReceta(receta);
-    });
+  document.getElementById("editThisRecipe").addEventListener("click", () => {
+  recipeDialog.close();
+  abrirFormularioReceta(receta);
+
+  if (!adminDialog.open) {
+    adminDialog.showModal();
+  }
+});
 
     document.getElementById("deleteThisRecipe").addEventListener("click", async () => {
       if (!confirm(
@@ -880,6 +884,9 @@ function renderizarListaAdmin() {
 
 function abrirFormularioReceta(receta) {
   recetaEnEdicion = receta ? receta.id : null;
+  if (!adminDialog.open) {
+  adminDialog.showModal();
+}
 
   const ingredientes = receta
     ? receta.ingredientes
@@ -1154,11 +1161,11 @@ function abrirFormularioReceta(receta) {
         .map(linea => linea.trim())
         .filter(Boolean)
         .map((linea, indice) => {
-          const partes = linea.split(/[,|]/).map(parte => parte.trim());
+          const partes = linea.split(/[,]/).map(parte => parte.trim());
 
           if (partes.length !== 3 || !partes[0] || !partes[2]) {
             throw new Error(
-              `Revisá la línea ${indice + 1} de ingredientes. Usá: nombre | cantidad | unidad.`
+              `Revisá la línea ${indice + 1} de ingredientes. Usá: nombre , cantidad , unidad.`
             );
           }
 
@@ -1462,50 +1469,14 @@ onAuthStateChanged(auth, async usuario => {
   escucharRecetas();
 
   if (adminDialog.open) {
-    if (esAdministrador) {
-      mostrarPanelAdmin();
-
-    } else {
-      adminDialog.innerHTML = `
-        <div class="dialog-top">
-          <div>
-            <span class="eyebrow">ACCESO RESTRINGIDO</span>
-            <h2>Sin permisos</h2>
-          </div>
-
-          <button
-            class="close-button"
-            id="closeAdmin"
-            type="button"
-            aria-label="Cerrar"
-          >×</button>
-        </div>
-
-        <p>
-          Iniciaste sesión, pero este usuario no figura como
-          administrador activo.
-        </p>
-
-        <p class="admin-notice">
-          Verificá que exista el documento admins/${escaparHTML(usuario.uid)}
-          y que el campo activo sea Boolean true.
-        </p>
-
-        <button class="secondary-button" id="logoutNoAdmin" type="button">
-          Cerrar sesión
-        </button>
-      `;
-
-      document.getElementById("closeAdmin").addEventListener("click", () => {
-        adminDialog.close();
-      });
-
-      document.getElementById("logoutNoAdmin").addEventListener("click", async () => {
-        await signOut(auth);
-        adminDialog.close();
-      });
-    }
+  if (esAdministrador) {
+    mostrarPanelAdmin();
+  } else {
+    // Si inicia sesión un usuario común, cerramos
+    // la ventana de administración sin mostrar errores.
+    adminDialog.close();
   }
+}
 });
 
 /* =========================================
