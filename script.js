@@ -889,10 +889,10 @@ function abrirFormularioReceta(receta) {
 }
 
   const ingredientes = receta
-    ? receta.ingredientes
-        .map(item => `${item.nombre} | ${item.cantidad} | ${item.unidad}`)
-        .join("\n")
-    : "";
+  ? receta.ingredientes
+      .map(item => `${item.nombre}, ${item.cantidad}, ${item.unidad}`)
+      .join("\n")
+  : "";
 
   const pasos = receta ? receta.pasos.join("\n") : "";
 
